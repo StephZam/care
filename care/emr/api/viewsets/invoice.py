@@ -110,6 +110,7 @@ class InvoiceViewSet(
             sync_invoice_items(instance)
             instance.save()
             rebalance_account_task.delay(instance.account.id)
+        super().perform_create(instance)
 
         return instance
 

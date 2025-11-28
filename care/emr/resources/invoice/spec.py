@@ -10,6 +10,7 @@ from care.emr.models.invoice import Invoice
 from care.emr.resources.account.spec import AccountReadSpec
 from care.emr.resources.base import EMRResource
 from care.emr.resources.charge_item.spec import ChargeItemReadSpec
+from care.emr.resources.user.spec import UserSpec
 
 
 class InvoiceStatusOptions(str, Enum):
@@ -71,6 +72,8 @@ class InvoiceRetrieveSpec(InvoiceReadSpec):
     charge_items: list[dict]
     total_price_components: list[dict]
     account: dict
+    created_by: UserSpec = {}
+    updated_by: UserSpec = {}
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
@@ -85,3 +88,7 @@ class InvoiceRetrieveSpec(InvoiceReadSpec):
         else:
             mapping["charge_items"] = obj.charge_items_copy
         mapping["account"] = AccountReadSpec.serialize(obj.account).to_json()
+        if obj.created_by:
+            mapping["created_by"] = UserSpec.serialize(obj.created_by).to_json()
+        if obj.updated_by:
+            mapping["updated_by"] = UserSpec.serialize(obj.updated_by).to_json()
